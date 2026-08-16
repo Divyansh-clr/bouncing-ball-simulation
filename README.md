@@ -84,25 +84,25 @@ if user_input in planet_data:
     g_val = planet_data[user_input]["g"]
     k_val = planet_data[user_input]["K"]
 
-    choise = input("do you want to set your garvity and air resistance? (Yes/No):").strip().lower()
+    choice = input("do you want to set your garvity and air resistance? (Yes/No):").strip().lower()
     H_Choise = input("do you want to set your initial hight? (Yes/No):").strip().lower()
     S_Choise = input("do you want to set your steps? (Yes/No):").strip().lower()
     M_Choise = input("do you want to set your mass? (Yes/No):").strip().lower()
 
-    if choise == "yes":
+    if choice == "yes":
         g_val = float(input("Enter gravity value:"))
         k_val = float(input("Enter air resistance value:"))
-    if H_Choise == "yes":
-        Height = float(input("Enter initial hight:"))
+    if H_Choice == "yes":
+        Height = float(input("Enter initial height:"))
     else:
       Height = 20.0
 
-    if S_Choise == "yes":
+    if S_Choice == "yes":
        steps = int(input("Enter total steps:"))
     else:
       steps = 100
 
-    if M_Choise == "yes":
+    if M_Choice == "yes":
       mass = float(input("Enter mass:"))
 
     else:  
