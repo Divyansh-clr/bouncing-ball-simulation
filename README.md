@@ -20,47 +20,48 @@ A Python-based command-line tool that simulates the motion of an object dropped 
    ```bash
    pip install matplotlib
 
+ #the code  
 
 
 import matplotlib.pyplot as plt
 planet_data = {
-    "mercury": {"g": -3.7, "K": 0.0},     
-    "venus": {"g": -8.87, "K": 0.5},   
-    "earth": {"g": -9.8, "K": 0.1},    
-    "mars": {"g": -3.72, "K": 0.02},   
-    "moon": {"g": -1.62, "K": 0.0},     
-    "titan": {"g": -1.35, "K": 0.3},    
+    "mercury": {"g": -3.7, "K": 0.0},
+    "venus": {"g": -8.87, "K": 0.5},
+    "earth": {"g": -9.8, "K": 0.1},
+    "mars": {"g": -3.72, "K": 0.02},
+    "moon": {"g": -1.62, "K": 0.0},
+    "titan": {"g": -1.35, "K": 0.3},
     "europa": {"g": -1.31, "K": 0.0},
-    "jupiter": {"g": -24.79, "K": 0.5},   
-    "saturn": {"g": -10.44, "K": 0.4},    
-    "uranus": {"g": -8.69, "K": 0.3},     
-    "neptune": {"g": -11.15, "K": 0.3},   
-    "pluto": {"g": -0.62, "K": 0.01}    
+    "jupiter": {"g": -24.79, "K": 0.5},
+    "saturn": {"g": -10.44, "K": 0.4},
+    "uranus": {"g": -8.69, "K": 0.3},
+    "neptune": {"g": -11.15, "K": 0.3},
+    "pluto": {"g": -0.62, "K": 0.01}
 }
 
-def run_simulation(g, K,initial_height,total_steps,mass):
+def run_simulation(g, K,initial_height,total_steps,mass,Elasticity):
     Y = initial_height
     V = 0.0
     dt = 0.1
     M = mass
     y_history = []
-    
+
     for i in range(total_steps):
         F_gravity = M * g
         F_drag = -K * V * abs(V)
-        
+
         F = F_gravity + F_drag
         A = F / M
-        
+
         V = V + A * dt
         Y = Y + V * dt
-        
+
         if Y <= 0:
-            V = -V * 0.8
+            V = -V * Elasticity
             Y = 0
-            
+
         y_history.append(Y)
-        
+
     plt.plot(y_history)
     plt.title("Ball's Height Over Time")
     plt.xlabel("Time")
@@ -70,49 +71,65 @@ def run_simulation(g, K,initial_height,total_steps,mass):
 def p(x):
   print(x)
 
-p("Available data")
-p("All planets of the solar system")
-p("-------------------------------------")
-p("other options")
-p("moon")  
-p("Titan")
-p("Europa")
-p("Pluto")
-user_input = input("Enter any planet or moon's name").strip().lower()
+while True:
+    p("Available data")
+    p("All planets of the solar system")
+    p("-------------------------------------")
+    p("other options")
+    p("moon")
+    p("Titan")
+    p("Europa")
+    p("Pluto")
 
-if user_input in planet_data:
-    g_val = planet_data[user_input]["g"]
-    k_val = planet_data[user_input]["K"]
+    user_input = input("Enter any planet or moon's name or 'exit' if you want to quit").strip().lower()
 
-    choice = input("do you want to set your garvity and air resistance? (Yes/No):").strip().lower()
-    H_Choice = input("do you want to set your initial hight? (Yes/No):").strip().lower()
-    S_Choice = input("do you want to set your steps? (Yes/No):").strip().lower()
-    M_Choice = input("do you want to set your mass? (Yes/No):").strip().lower()
+    if user_input == "exit":
+        break
 
-    if choice == "yes":
-        g_val = float(input("Enter gravity value:"))
-        k_val = float(input("Enter air resistance value:"))
-    if H_Choice == "yes":
-        Height = float(input("Enter initial height:"))
+    Customisation_choice = input("do you want any customisation? (Yes/No):").strip().lower()
+
+    if user_input in planet_data:
+        g_val = planet_data[user_input]["g"]
+        k_val = planet_data[user_input]["K"]
+        
+        # Default values
+        Height = 20.0
+        steps = 100
+        mass = 2.0
+        Elasticity = 0.8 # A more realistic default for elasticity, changed from 8.0
+
+        if Customisation_choice == "yes":
+
+            choice = input("do you want to set your gravity and air resistance? (Yes/No):").strip().lower()
+            H_Choice = input("do you want to set your initial height? (Yes/No):").strip().lower()
+            S_Choice = input("do you want to set your steps? (Yes/No):").strip().lower()
+            M_Choice = input("do you want to set your mass? (Yes/No):").strip().lower()
+            E_choice = input("do you want to set your elasticity? (Yes/No):").strip().lower()
+
+            if E_choice == "yes":
+              Elasticity = float(input("Enter elasticity value:"))
+            
+
+            if choice == "yes":
+                g_val = float(input("Enter gravity value:"))
+                k_val = float(input("Enter air resistance value:"))
+            if H_Choice == "yes":
+                Height = float(input("Enter initial hight:"))
+            
+
+            if S_Choice == "yes":
+               steps = int(input("Enter total steps:"))
+            
+
+            if M_Choice == "yes":
+              mass = float(input("Enter mass:"))
+
+            
+        print(f"(Gravity: {g_val}, Air Resistance: {k_val})")
+        run_simulation(g_val, k_val,Height,steps,mass, Elasticity)
+
+    elif user_input.isdigit():
+          print("Invalid input: Name cannot be purely numeric.")
+
     else:
-      Height = 20.0
-
-    if S_Choice == "yes":
-       steps = int(input("Enter total steps:"))
-    else:
-      steps = 100
-
-    if M_Choice == "yes":
-      mass = float(input("Enter mass:"))
-
-    else:  
-      mass = 2.0
-
-    print(f"(Gravity: {g_val}, Air Resistance: {k_val})")
-    run_simulation(g_val, k_val,Height,steps,mass)
-
-elif user_input.isdigit(): 
-      print("Invalid input: Name cannot be purely numeric.")    
-
-else:
-    print("Invalid input. Please enter a valid planet or moon name.")
+        print("Invalid input. Please enter a valid planet or moon name.")
